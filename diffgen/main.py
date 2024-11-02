@@ -1,3 +1,4 @@
+from typing_extensions import Annotated
 import typer
 import config
 from llm import LLM
@@ -15,20 +16,15 @@ def commit():
 
     Message will be generated based on the changes added to the staging area.
     """
-    commit_message = llm_client.generate_commit_message()
-    if commit_message:
-        print(commit_message)
+    print(llm_client.generate_commit_message())
 
 
 @app.command()
-def pr(name: str, formal: bool = False):
+def pr(from_branch: Annotated[str, typer.Option()], to_branch: Annotated[str, typer.Option()]):
     """
     Generate a pull request description.
     """
-    if formal:
-        print(f"Goodbye Ms. {name}. Have a good day.")
-    else:
-        print(f"Bye {name}!")
+    print(llm_client.generate_pr_description(from_branch, to_branch))
 
 
 if __name__ == "__main__":
