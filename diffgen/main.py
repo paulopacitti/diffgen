@@ -9,14 +9,15 @@ app = typer.Typer(context_settings=CONTEXT_SETTINGS)
 
 
 @app.command()
-def commit(name: str):
+def commit():
     """
     Generate a commit message.
 
     Message will be generated based on the changes added to the staging area.
     """
-    llm_client.generate_commit_message()
-    print(f"Hello {name}")
+    commit_message = llm_client.generate_commit_message()
+    if commit_message:
+        print(commit_message)
 
 
 @app.command()

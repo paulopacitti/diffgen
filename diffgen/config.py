@@ -32,12 +32,12 @@ def load_config() -> dict:
             return DiffgenConfig(**config).model_dump()
         except json.JSONDecodeError as e:
             print(
-                rf"[red]\[config] Invalid JSON in config file. Make sure the configuration is correct in {CONFIG_FILE_PATH}[/]"
+                rf"[red]Invalid JSON in config file. Make sure the configuration is correct in {CONFIG_FILE_PATH}[/]"
             )
             exit(1)
         except ValidationError as e:
             print(
-                rf"[red]\[config] Invalid config file. Make sure the configuration is correct in {CONFIG_FILE_PATH}[/]"
+                rf"[red]Invalid config file. Make sure the configuration is correct in {CONFIG_FILE_PATH}[/]"
             )
             exit(1)
 
