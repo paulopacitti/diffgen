@@ -3,6 +3,7 @@ from os import makedirs
 from os.path import isfile
 from pathlib import Path
 from pydantic import BaseModel, ValidationError
+from typing import Optional
 from rich import print
 
 
@@ -13,9 +14,9 @@ CONFIG_FILE_PATH = Path(f"{CONFIG_DIR_PATH}/config.json")
 
 class DiffgenConfig(BaseModel):
     model: str
-    base_url: str
-    api_key: str | None = None
-    custom_headers: str | None = None
+    base_url: Optional[str] = None
+    api_key: Optional[str] = None
+    custom_headers: Optional[str] = None
 
 
 def load_config() -> dict:
