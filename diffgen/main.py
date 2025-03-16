@@ -1,6 +1,7 @@
 from typing_extensions import Annotated
 import typer
 import diffgen.config as config
+import diffgen.git as git
 from diffgen.llm import LLM
 from rich import print
 
@@ -13,7 +14,12 @@ llm_client = LLM(**config_file)
 
 
 @app.command()
-def commit():
+def commit(
+    edit: Annotated[
+        bool,
+        typer.Option("--edit", "-e", help="Open the commit message in the git editor"),
+    ] = False,
+):
     """
     Generate a commit message.
 
@@ -21,7 +27,10 @@ def commit():
     """
     commit_message = llm_client.generate_commit_message()
     if commit_message:
-        print(commit_message)
+        if edit:
+            git.commit_editor_prefill(commit_message)
+        else:
+            print(commit_message)
 
 
 @app.command()
