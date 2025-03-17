@@ -19,18 +19,35 @@ def commit(
         bool,
         typer.Option("--edit", "-e", help="Open the commit message in the git editor"),
     ] = False,
+    repeat: Annotated[
+        bool,
+        typer.Option(
+            "--repeat", "-r", help="Generate multiple commit messages until satisfied"
+        ),
+    ] = False,
 ):
     """
     Generate a commit message.
 
     Message will be generated based on the changes added to the staging area.
     """
-    commit_message = llm_client.generate_commit_message()
-    if commit_message:
-        if edit:
-            git.commit_editor_prefill(commit_message)
-        else:
-            print(commit_message)
+    if repeat:
+        while True:
+            commit_message = llm_client.generate_commit_message()
+            if commit_message:
+                print(commit_message)
+                choice = input("\nGenerate a new message? ((y)es/(N)o): ").lower()
+                if choice != "y":
+                    if edit:
+                        git.commit_editor_prefill(commit_message)
+                        return
+    else:
+        commit_message = llm_client.generate_commit_message()
+        if commit_message:
+            if edit:
+                git.commit_editor_prefill(commit_message)
+            else:
+                print(commit_message)
 
 
 @app.command()
