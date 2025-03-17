@@ -34,3 +34,10 @@ def commit_editor_prefill(message: str):
         temp_file.flush()
         subprocess.run(["git", "commit", "--edit", "--file", temp_file.name])
 
+
+def get_current_branch():
+    command = subprocess.run(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"], stdout=subprocess.PIPE
+    )
+    output = command.stdout.decode("utf-8")
+    return output.strip()

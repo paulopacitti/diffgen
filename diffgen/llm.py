@@ -121,8 +121,35 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
             )
             exit(1)
         system_prompt = """
-            Based on this git diff, please generate a PR description in markdown (no code formatting necessary). The headers should be 'Context', 'Changes' and 'Testing'. I want just the PR description, nothing else.
-        """
+            # Pull Request description generator:
+            Generate a concise, Markdown-formatted PR description using the provided Git diff between two branches. Focus on clarity, context, and actionable details for reviewers.
+
+            # Intructions:
+
+            1. Analyze the given changes (git diff) on "# Diff".
+            2. Write a Pull Request description with the following items:
+            - Title: A short, specific summary (e.g., “Fix payment processing bug”).
+            - Description: Overview of changes and their purpose. Highlight key technical decisions or trade-offs.
+            3. In Description, use the following headers: "## Context", "## Changes", "## Texts".
+
+            ## Example Output:
+
+            ```md
+            # Fix payment gateway timeout issue
+
+            ## Context
+            There was an issue in the payment gateway where timeouts were happening, interrupting ongoing payments. 
+            This was caused by misconfiguration.
+
+            ## Changes
+            - Resolves intermittent timeout errors in payment processing by increasing API retry limits.  
+            - Refactored error-handling logic to prioritize user-facing messages.  
+
+            ## Tests
+            - Unit tests ran succesfully
+            - Tested on development environment.
+            ```
+            """
         user_prompt = diff
 
         return self.call(system_prompt, user_prompt)

@@ -58,10 +58,13 @@ def commit(
 
 @app.command()
 def pr(
-    from_branch: Annotated[str, typer.Option()],
-    to_branch: Annotated[str, typer.Option()],
+    from_branch: Annotated[str, typer.Option()] = None,
+    to_branch: Annotated[str, typer.Option()] = "main",
 ):
     """
     Generate a pull request description.
     """
-    print(llm_client.generate_pr_description(from_branch, to_branch))
+    if not from_branch:
+        from_branch = git.get_current_branch()
+    pr_description = llm_client.generate_pr_description(from_branch, to_branch)
+    print(pr_description)
