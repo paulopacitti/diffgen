@@ -15,6 +15,12 @@ llm_client = LLM(**config_file)
 
 @app.command()
 def commit(
+    context: Annotated[
+        str,
+        typer.Option(
+            "--context", "-c", help="Custom context to enhance commit message"
+        ),
+    ] = "",
     edit: Annotated[
         bool,
         typer.Option("--edit", "-e", help="Open the commit message in the git editor"),
@@ -33,7 +39,7 @@ def commit(
     """
     if repeat:
         while True:
-            commit_message = llm_client.generate_commit_message()
+            commit_message = llm_client.generate_commit_message(context)
             if commit_message:
                 print(commit_message)
                 choice = input("\nGenerate a new message? ((y)es/(N)o): ").lower()
@@ -42,7 +48,7 @@ def commit(
                         git.commit_editor_prefill(commit_message)
                         return
     else:
-        commit_message = llm_client.generate_commit_message()
+        commit_message = llm_client.generate_commit_message(context)
         if commit_message:
             if edit:
                 git.commit_editor_prefill(commit_message)

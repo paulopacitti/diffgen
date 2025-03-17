@@ -1,3 +1,4 @@
+from typing import Optional
 import diffgen.git as git
 from diffgen.config import CONFIG_FILE_PATH
 import litellm
@@ -49,7 +50,7 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
             )
             exit(1)
 
-    def generate_commit_message(self) -> str | None:
+    def generate_commit_message(self, context: Optional[str]) -> str | None:
         diff = git.get_staging_area_diff()
         if not diff:
             print("[yellow]There's nothing in the staging area, no files to commit.[/]")
@@ -61,18 +62,19 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
 
             ## Instructions:
 
-            1. Analyze the provided changes or description of the commit.
-            2. Generate a commit message in the following format:
+            1. Analyze the provided changes in the "## Diff".
+            2. Analyze the optional description of the changes in "## Context".
+            3. Generate a commit message in the following format:
 
             ```
-            <type>(<scope>): <description>
+            <type>(optional <scope>): <description>
 
             [optional body]
 
             [optional footer(s)]
             ```
 
-            3. Ensure the message adheres to these rules:
+            4. Ensure the message adheres to these rules:
             - Type: Use one of the predefined types:
               - `feat`: A new feature.
               - `fix`: A bug fix.
@@ -98,7 +100,16 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
             BREAKING CHANGE: Updated authentication API
             ```
         """
-        user_prompt = diff
+        user_prompt = (
+            """
+            ## Diff
+        """
+            + diff
+            + """
+            ## Context
+        """
+            + context
+        )
 
         return self.call(system_prompt, user_prompt)
 
