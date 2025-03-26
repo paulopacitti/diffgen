@@ -20,7 +20,7 @@ def get_staging_area_diff():
 
 def get_branches_diff(from_branch, to_branch):
     command = subprocess.run(
-        ["git", "diff", from_branch, to_branch], stdout=subprocess.PIPE
+        ["git", "diff", to_branch, from_branch], stdout=subprocess.PIPE
     )
     output = command.stdout.decode("utf-8")
     if not output:
