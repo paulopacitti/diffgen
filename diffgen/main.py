@@ -58,6 +58,12 @@ def commit(
 
 @app.command()
 def pr(
+    context: Annotated[
+        str,
+        typer.Option(
+            "--context", "-c", help="Custom context to enhance PR description"
+        ),
+    ] = "",
     from_branch: Annotated[str, typer.Option()] = None,
     to_branch: Annotated[str, typer.Option()] = "main",
 ):
@@ -66,5 +72,5 @@ def pr(
     """
     if not from_branch:
         from_branch = git.get_current_branch()
-    pr_description = llm_client.generate_pr_description(from_branch, to_branch)
+    pr_description = llm_client.generate_pr_description(from_branch, to_branch, context)
     print(pr_description)

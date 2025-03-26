@@ -113,7 +113,9 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
 
         return self.call(system_prompt, user_prompt)
 
-    def generate_pr_description(self, from_branch, to_branch) -> str | None:
+    def generate_pr_description(
+        self, from_branch, to_branch, context: Optional[str]
+    ) -> str | None:
         diff = git.get_branches_diff(from_branch, to_branch)
         if not diff:
             print(
@@ -127,10 +129,11 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
             # Intructions:
 
             1. Analyze the given changes (git diff) on "# Diff".
-            2. Write a Pull Request description with the following items:
+            2. Analyze the optional description of the changes in "## Context".
+            3. Write a Pull Request description with the following items:
             - Title: A short, specific summary (e.g., “Fix payment processing bug”).
             - Description: Overview of changes and their purpose. Highlight key technical decisions or trade-offs.
-            3. In Description, use the following headers: "## Context", "## Changes", "## Texts".
+            4. In Description, use the following headers: "## Context", "## Changes", "## Texts".
 
             ## Example Output:
 
@@ -150,6 +153,15 @@ Make sure your config is correctly set up. ({CONFIG_FILE_PATH})[/]"""
             - Tested on development environment.
             ```
             """
-        user_prompt = diff
+        user_prompt = (
+            """
+            ## Diff
+        """
+            + diff
+            + """
+            ## Context
+        """
+            + context
+        )
 
         return self.call(system_prompt, user_prompt)
