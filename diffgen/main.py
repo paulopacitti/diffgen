@@ -74,3 +74,14 @@ def pr(
         from_branch = git.get_current_branch()
     pr_description = llm_client.generate_pr_description(from_branch, to_branch, context)
     print(pr_description)
+
+
+@app.command()
+def init():
+    """
+    Initialize a new configuration file.
+    """
+    path = config.init()
+    print(
+        f"Configuration file created successfully at {path}. Edit to add you LLM API config."
+    )

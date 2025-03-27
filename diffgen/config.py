@@ -20,13 +20,7 @@ class DiffgenConfig(BaseModel):
 
 
 def load_config() -> dict:
-    if not isfile(CONFIG_FILE_PATH):
-        makedirs(CONFIG_DIR_PATH, exist_ok=True)
-        with open(CONFIG_FILE_PATH, "w+") as f:
-            initial_config = DiffgenConfig(
-                model="default", base_url="http://localhost:8000"
-            )
-            f.write(initial_config.model_dump_json(indent=4))
+    init()
     with open(CONFIG_FILE_PATH, "r") as f:
         try:
             config = json.load(f)
@@ -41,6 +35,17 @@ def load_config() -> dict:
                 rf"[red]Invalid config file. Make sure the configuration is correct in {CONFIG_FILE_PATH}[/]"
             )
             exit(1)
+
+
+def init():
+    if not isfile(CONFIG_FILE_PATH):
+        makedirs(CONFIG_DIR_PATH, exist_ok=True)
+        with open(CONFIG_FILE_PATH, "w+") as f:
+            initial_config = DiffgenConfig(
+                model="default", base_url="http://localhost:8000"
+            )
+            f.write(initial_config.model_dump_json(indent=4))
+    return CONFIG_FILE_PATH
 
 
 # Example usage
